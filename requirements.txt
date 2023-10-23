@@ -1,6 +1,0 @@
-streamlit
-requests
-Pillow
-pytesseract
-pytesseract.pytesseract
-tesseract-ocr
