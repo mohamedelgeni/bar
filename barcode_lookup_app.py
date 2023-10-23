@@ -3,7 +3,8 @@ import requests
 import json
 import os
 from PIL import Image
-import pytesseract
+import barcode
+from barcode import decode
 
 # Define lists of blocked brands and their corresponding replacements
 blocked_brands = ["BlockedBrand1", "BlockedBrand2", "BlockedBrand3"]
@@ -43,18 +44,18 @@ uploaded_image = st.file_uploader("Upload an image of a barcode", type=["jpg", "
 manual_barcode_input = st.number_input("Or enter a barcode manually", value=0, min_value=0, step=1)
 
 if uploaded_image is not None:
-    # Read the uploaded image and use OCR to extract the barcode number
+    # Read the uploaded image and use python-barcode to decode the barcode
     image = Image.open(uploaded_image)
-    extracted_text = pytesseract.image_to_string(image)
-    
-    # Try to extract a number from the extracted text
-    extracted_barcode = "".join(filter(str.isdigit, extracted_text))
-    
-    if extracted_barcode:
-        st.write("Extracted Barcode from Image:", extracted_barcode)
-        barcode_lookup(extracted_barcode)
-    else:
-        st.write("Unable to extract a valid barcode from the uploaded image.")
+    try:
+        barcode_data = barcode.decode(image)
+        if barcode_data:
+            extracted_barcode = barcode_data[0][1]
+            st.write("Extracted Barcode from Image:", extracted_barcode)
+            barcode_lookup(extracted_barcode)
+        else:
+            st.write("No barcode found in the uploaded image.")
+    except Exception as e:
+        st.write(f"Error decoding barcode from image: {str(e)}")
 
 if st.button("Lookup Barcode"):
     barcode_lookup(manual_barcode_input)
