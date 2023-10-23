@@ -6,7 +6,7 @@ from PIL import Image
 import pytesseract
 
 # Define lists of blocked brands and their corresponding replacements
-blocked_brands = ["BlockedBrand1", "BlockedBrand2", "BlockedBrand3"]
+blocked_brands = ["aquafina ", "BlockedBrand2", "BlockedBrand3"]
 replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
 
 def barcode_lookup(barcode):
