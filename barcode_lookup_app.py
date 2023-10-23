@@ -37,7 +37,7 @@ def barcode_lookup(barcode):
 
 # Streamlit UI
 st.title("مقاطعة المنتجات التي تدعم إسرائيل")
-st.write("Upload an image of a barcode or enter a barcode manually.")
+st.write("ارفع صوره للباركود الموجود علي المنتج او اكتبه تحت.")
 
 uploaded_image = st.file_uploader("Upload an image of a barcode", type=["jpg", "png"])
 manual_barcode_input = st.number_input("Or enter a barcode manually", value=0, min_value=0, step=1)
