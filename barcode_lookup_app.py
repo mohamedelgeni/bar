@@ -36,7 +36,7 @@ def barcode_lookup(barcode):
         st.write("Error:", response.status_code)
 
 # Streamlit UI
-st.title("Barcode Lookup App")
+st.title("مقاطعة المنتجات التي تدعم إسرائيل")
 st.write("Upload an image of a barcode or enter a barcode manually.")
 
 uploaded_image = st.file_uploader("Upload an image of a barcode", type=["jpg", "png"])
