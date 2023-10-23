@@ -4,10 +4,7 @@ import json
 import os
 from PIL import Image
 import pytesseract
-if "Tesseract-OCR" in os.environ["PATH"]:
-    pytesseract.pytesseract.tesseract_cmd = "tesseract"
-else:
-    pytesseract.pytesseract.tesseract_cmd = "/app/.heroku/python/share/tesseract-ocr/tesseract"
+
 # Define lists of blocked brands and their corresponding replacements
 blocked_brands = ["BlockedBrand1", "BlockedBrand2", "BlockedBrand3"]
 replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
