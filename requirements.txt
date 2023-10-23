@@ -4,4 +4,4 @@ streamlit-ace
 requests
 json
 PIL
-pytesseract
+pytesseract ==5.2.0
