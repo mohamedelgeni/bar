@@ -36,8 +36,8 @@ def barcode_lookup(barcode):
         st.write("Error:", response.status_code)
 
 # Streamlit UI
-st.markdown(f"<h1 style='text-align: center; color:#3E3F3A; font-size:50px;'>{('مقاطعة المنتجات التي تدعم إسرائيل')}</h1>", unsafe_allow_html=True)
-st.markdown(f"<h1 style='text-align: center; color:#3E3F3A; font-size:20px;'>{('مقاطعة المنتجات التي تدعم إسرائيل عن طريق تحديد البار كود الخاص ب المنتج وتحديد بديل')}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; font-size:50px;'>{('مقاطعة المنتجات التي تدعم إسرائيل')}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; font-size:20px;'>{('مقاطعة المنتجات التي تدعم إسرائيل عن طريق تحديد البار كود الخاص ب المنتج وتحديد بديل')}</h1>", unsafe_allow_html=True)
 uploaded_image = st.file_uploader("ارفع صوره للباركود الموجود علي المنتج", type=["jpg", "png"])
 manual_barcode_input = st.number_input("ااكتبه البار كود الخاص ب المنتج ", value=0, min_value=0, step=1)
 
