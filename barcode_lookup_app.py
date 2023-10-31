@@ -10,7 +10,7 @@ blocked_brands = ["aquafina ", "BlockedBrand2", "BlockedBrand3"]
 replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
 
 def barcode_lookup(barcode):
-    api_key = "omi4zeddt00qn3t8b5bticf0iviji1"
+    api_key = "6rlauhu0u2zzl0y3oveow51fcineni"
     url = f"https://api.barcodelookup.com/v3/products?barcode={barcode}&formatted=y&key={api_key}"
 
     response = requests.get(url)
