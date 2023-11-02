@@ -31,7 +31,7 @@ def barcode_lookup(barcode):
         if brand in (blocked.strip().lower() for blocked in blocked_brands):
             index = [blocked.strip().lower() for blocked in blocked_brands].index(brand)
             replacement = replacement_brands[index]
-            st.write("This brand is blocked. Here is a replacement:", replacement)
+            st.write("هذا المنتج مقاطعه ويوجد بديل له مثل :", replacement)
         else:
             st.write("This brand is not blocked.")
     else:
@@ -59,7 +59,7 @@ if uploaded_image is not None:
         st.write("Extracted Barcode from Image:", extracted_barcode)
         barcode_lookup(extracted_barcode)
     else:
-        st.write("Unable to extract a valid barcode from the uploaded image.")
+        st.write("الصوره غير واضحه حاول مره اخري تصوير البار كود بطريقه اوضح.")
 
 if st.button("بحث "):
     barcode_lookup(manual_barcode_input)
