@@ -41,7 +41,6 @@ def barcode_lookup(barcode):
     # Your barcode lookup code here
 
 # Streamlit UI
-st.markdown(f"<h1 style='text-align: center; font-size:50px;'>{('مقاطعة المنتجات التي تدعم إسرائيل')}</h1>", unsafe_allow_html=True)
 st.markdown(f"<h1 style='text-align: center; font-size:20px;'>{('تحديد المنتجات التي تدعم إسرائيل عن طريق تحديد البار كود الخاص ب المنتج و ترشيح بديل')}</h1>", unsafe_allow_html=True)
 
 # Create a multiselect widget to select blocked brands
