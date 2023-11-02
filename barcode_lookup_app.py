@@ -39,7 +39,7 @@ def barcode_lookup(barcode):
 
 # Streamlit UI
 st.markdown(f"<h1 style='text-align: center; font-size:50px;'>{('مقاطعة المنتجات التي تدعم إسرائيل')}</h1>", unsafe_allow_html=True)
-st.markdown(f"<h1 style='text-align: center; font-size:20px;'>{('تحديد المنتجات التي تدعم إسرائيل عن طريق تحديد البار كود الخاص ب المنتج و ترشيح بديل')}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; font-size:50px;'><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Flag_of_Palestine_-_short_triangle.svg/1200px-Flag_of_Palestine_-_short_triangle.svg.png' alt='Palestine Flag' style='height: 50px; vertical-align: middle;' /> مقاطعة المنتجات التي تدعم إسرائيل</h1>", unsafe_allow_html=True)
 uploaded_image = st.file_uploader("ارفع صوره للباركود الموجود علي المنتج", type=["jpg", "png"])
 manual_barcode_input = st.number_input("ادخل البار كود الخاص ب المنتج ", value=0, min_value=0, step=1)
 
