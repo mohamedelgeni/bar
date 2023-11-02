@@ -2,11 +2,13 @@ import streamlit as st
 import requests
 import json
 import os
-from PIL import Image
-import pytesseract
+import cv2
+import numpy as np
+
+from pyzbar.pyzbar import decode
 
 # Define lists of blocked brands and their corresponding replacements
-blocked_brands = ["aquafina ", "BlockedBrand2", "BlockedBrand3"]
+blocked_brands = ["aquafina", "BlockedBrand2", "BlockedBrand3"]
 replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
 
 def barcode_lookup(barcode):
@@ -42,14 +44,18 @@ uploaded_image = st.file_uploader("ارفع صوره للباركود الموج
 manual_barcode_input = st.number_input("ادخل البار كود الخاص ب المنتج ", value=0, min_value=0, step=1)
 
 if uploaded_image is not None:
-    # Read the uploaded image and use OCR to extract the barcode number
-    image = Image.open(uploaded_image)
-    extracted_text = pytesseract.image_to_string(image)
-    
-    # Try to extract a number from the extracted text
-    extracted_barcode = "".join(filter(str.isdigit, extracted_text))
-    
-    if extracted_barcode:
+    # Read the uploaded image and use OpenCV for barcode detection
+    image = cv2.imdecode(np.frombuffer(uploaded_image.read(), np.uint8), -1)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Use an appropriate thresholding method to binarize the image
+    _, thresholded = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY)
+
+    # Find and decode barcodes using pyzbar
+    detected_barcodes = decode(thresholded)
+
+    if detected_barcodes:
+        extracted_barcode = detected_barcodes[0].data.decode('utf-8')
         st.write("Extracted Barcode from Image:", extracted_barcode)
         barcode_lookup(extracted_barcode)
     else:
