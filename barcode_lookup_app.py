@@ -5,31 +5,31 @@ import os
 import cv2
 import numpy as np
 
+from pyzbar.pyzbar import decode
+
 # Define lists of blocked brands and their corresponding replacements
 blocked_brands = ["aquafina", "BlockedBrand2", "BlockedBrand3"]
 replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
 
 # List of blocked brands for the sidebar
 blocked_list = [
-    "Lipton", "Nescafé", "nestle Elvan", "aqua", "pavane", "coffee mate",
-    "nestle water", "Coca-Cola", "Schweppes", "mirinda", "Tang", "Fanta",
-    "Sprit", "Pepsi", "AQUAFINA", "Tropicana", "Mounten Dew", "7up", "CERILAC",
-    "bledina", "Beblac", "Donone", "NIDO", "Activia", "kraft", "Marlboro",
-    "quaker", "corn fleaks", "special k", "coco pops", "Kellogg’s Frosties",
-    "Maggi", "Knorr", "Heinz", "kinder", "twix", "moroo", "freerio rusher",
-    "Hohos", "country كورن فليكس", "Danone", "Lion", "Tuc", "Cadbury DairyMILK",
-    "Oreo", "Baskin-Robbins", "Kitkat", "m&ms", "SNICKERS", "BOUNTY", "MARS",
-    "kinder", "twix", "moroo", "freerio roshiere", "Hohos", "Cheetos", "Doritos",
-    "pringles", "puvana", "Vaseline", "Dove", "Cif", "Clear", "Lux", "Axe",
-    "Unilever", "Surf", "Ponds", "Kia", "L'Oreal", "The Body Shop", "Maybelline",
-    "Procter & Gamble", "Head & Shoulders", "Gillette", "Pantene", "BRAUN", "VO5",
-    "SUNSILK", "Pizza Hut", "Starbucks", "Dunkin' Donuts", "Burger King",
-    "Papa John's", "McDonald's", "KFC (Kentucky Fried Chicken)", "Nesquik", "ice cream",
-    "Starbucks", "Downy Comfort", "Fairy", "Crest", "Oral-B", "Ariel", "Tide", "Always",
-    "Pampers", "Johnsons baby", "Garnier", "Tide", "OMO", "fa", "Lifebuoy", "Lux",
-    "clean&Clear", "Pril", "Ariel", "Comfort", "cif", "DAC", "neutrogena", "Jif",
-    "Sandisk", "Xerox", "philips", "Dell", "hp", "Gillette", "Venus", "Braun",
-    "Camay", "zest", "apple", "Nike", "polo", "lacosta"
+    "Lipton", "Nescafé", "nestle Elvan", "aqua", "pavane", "coffee mate", "nestle water",
+    "Coca-Cola", "Schweppes", "mirinda", "Tang", "Fanta", "Sprit", "Pepsi", "AQUAFINA",
+    "Tropicana", "Mounten Dew", "7up", "CERILAC", "bledina", "Beblac", "Donone", "NIDO",
+    "Activia", "kraft", "Marlboro", "quaker", "corn fleaks", "special k", "coco pops",
+    "Kellogg’s Frosties", "Maggi", "Knorr", "Heinz", "kinder", "twix", "moroo",
+    "freerio rusher", "Hohos", "country كورن فليكس", "Danone", "Lion", "Tuc",
+    "Cadbury DairyMILK", "Oreo", "Baskin-Robbins", "Kitkat", "m&ms", "SNICKERS", "BOUNTY",
+    "MARS", "kinder", "twix", "moroo", "freerio roshiere", "Hohos", "Cheetos", "Doritos",
+    "pringles", "puvana", "Vaseline", "Dove", "Cif", "Clear", "Lux", "Axe", "Unilever",
+    "Surf", "Ponds", "Kia", "L'Oreal", "The Body Shop", "Maybelline", "Procter & Gamble",
+    "Head & Shoulders", "Gillete", "Pantene", "BRAUN", "VO5", "SUNSILK", "Pizza Hut",
+    "Starbucks", "Dunkin' Donuts", "Burger King", "Papa John's", "McDonald's", "KFC",
+    "Nesquik", "ice cream", "Starbucks", "Downy Comfort", "Fairy", "Crest", "Oral-B",
+    "Ariel", "Tide", "Always", "Pampers", "Johnsons baby", "Garnier", "Tide", "OMO", "fa",
+    "Lifebuoy", "Lux", "clean&Clear", "Pril", "Ariel", "Comfort", "cif", "DAC", "neutrogena", "Jif",
+    "Sandisk", "Xerox", "philips", "Dell", "hp", "Gillette", "Venus", "Braun", "Camay", "zest", "apple",
+    "Nike", "polo", "lacosta"
 ]
 
 def barcode_lookup(barcode):
@@ -62,9 +62,10 @@ def barcode_lookup(barcode):
 st.markdown(f"<h1 style='text-align: center; font-size:50px;'>{('مقاطعة المنتجات التي تدعم إسرائيل')}</h1>", unsafe_allow_html=True)
 st.markdown(f"<h1 style='text-align: center; font-size:20px;'>{('تحديد المنتجات التي تدعم إسرائيل عن طريق تحديد البار كود الخاص ب المنتج و ترشيح بديل')}</h1>", unsafe_allow_html=True)
 
-# Sidebar with the list of blocked brands
-st.sidebar.title("Blocked List")
-st.sidebar.write(blocked_list)
+# Add the blocked brands list to the sidebar
+st.sidebar.markdown("Blocked Brands:")
+for brand in blocked_list:
+    st.sidebar.text(brand)
 
 uploaded_image = st.file_uploader("ارفع صوره للباركود الموجود علي المنتج", type=["jpg", "png"])
 manual_barcode_input = st.number_input("ادخل البار كود الخاص ب المنتج ", value=0, min_value=0, step=1)
