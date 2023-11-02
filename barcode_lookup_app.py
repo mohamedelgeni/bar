@@ -5,41 +5,51 @@ import os
 import cv2
 import numpy as np
 
-from pyzbar.pyzbar import decode
+# Define a list of blocked brands
+blocked_brands = [
+    "Lipton", "Nescafé", "Nestle Elvan", "Aqua", "Pavane",
+    "Coffee Mate", "Nestle Water", "Coca-Cola", "Schweppes",
+    "Mirinda", "Tang", "Fanta", "Sprit", "Pepsi", "Aquafina",
+    "Tropicana", "Mounten Dew", "7up", "CERILAC", "Bledina",
+    "Beblac", "Donone", "NIDO", "Activia", "Kraft", "Marlboro",
+    "Quaker", "Corn Flakes", "Special K", "Coco Pops",
+    "Kellogg’s Frosties", "Maggi", "Knorr", "Heinz",
+    "Kinder", "Twix", "Moroo", "Freerio Rusher", "Hohos",
+    "Country كورن فليكس", "Danone", "Lion", "Tuc",
+    "Cadbury DairyMILK", "Oreo", "Baskin-Robbins", "Kitkat",
+    "M&Ms", "SNICKERS", "BOUNTY", "MARS", "Kinder",
+    "Twix", "Moroo", "Freerio Rusher", "Hohos", "Cheetos",
+    "Doritos", "Pringles", "Pavane", "Vaseline", "Dove",
+    "Cif", "Clear", "Lux", "Axe", "Unilever", "Surf",
+    "Ponds", "Kia", "L'Oreal", "The Body Shop", "Maybelline",
+    "Procter & Gamble", "Head & Shoulders", "Gillette", "Pantene",
+    "BRAUN", "VO5", "SUNSILK", "Pizza Hut", "Starbucks",
+    "Dunkin' Donuts", "Burger King", "Papa John's", "McDonald's",
+    "KFC (Kentucky Fried Chicken)", "Nesquik", "Ice Cream", "Starbucks",
+    "Downy Comfort", "Fairy", "Crest", "Oral-B", "Ariel", "Tide",
+    "Always", "Pampers", "Johnsons Baby", "Garnier", "Tide", "OMO",
+    "Fa", "Lifebuoy", "Lux", "Clean & Clear", "Pril", "Ariel",
+    "Comfort", "Cif", "DAC", "Neutrogena", "Jif", "Sandisk",
+    "Xerox", "Philips", "Dell", "HP", "Gillette", "Venus",
+    "Braun", "Camay", "Zest", "Apple", "Nike", "Polo", "Lacoste"
+]
 
-# Define lists of blocked brands and their corresponding replacements
-blocked_brands = ["aquafina", "BlockedBrand2", "BlockedBrand3"]
-replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
+# Remove duplicates and sort the list for better user experience
+blocked_brands = sorted(list(set(blocked_brands)))
 
 def barcode_lookup(barcode):
-    api_key = "6rlauhu0u2zzl0y3oveow51fcineni"
-    url = f"https://api.barcodelookup.com/v3/products?barcode={barcode}&formatted=y&key={api_key}"
-
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        data = response.json()
-        barcode = data["products"][0]["barcode_number"]
-        name = data["products"][0]["title"]
-        brand = data["products"][0]["brand"].strip().lower()  # Compare in a case-insensitive manner and remove leading/trailing whitespace
-
-        st.write("Barcode Number:", barcode)
-        st.write("Title:", name)
-        st.write("Brand:", brand)
-
-        # Check if the brand is in the list of blocked brands
-        if brand in (blocked.strip().lower() for blocked in blocked_brands):
-            index = [blocked.strip().lower() for blocked in blocked_brands].index(brand)
-            replacement = replacement_brands[index]
-            st.write("هذا المنتج مقاطعه ويوجد بديل له مثل :", replacement)
-        else:
-            st.write("This brand is not blocked.")
-    else:
-        st.write("Error:", response.status_code)
+    # Your barcode lookup code here
 
 # Streamlit UI
-st.markdown(f"<h1 style='text-align: center; font-size:50px;'><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Flag_of_Palestine_-_short_triangle.svg/1200px-Flag_of_Palestine_-_short_triangle.svg.png' alt='Palestine Flag' style='height: 50px; vertical-align: middle;' /> مقاطعة المنتجات التي تدعم إسرائيل</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; font-size:50px;'>{('مقاطعة المنتجات التي تدعم إسرائيل')}</h1>", unsafe_allow_html=True)
 st.markdown(f"<h1 style='text-align: center; font-size:20px;'>{('تحديد المنتجات التي تدعم إسرائيل عن طريق تحديد البار كود الخاص ب المنتج و ترشيح بديل')}</h1>", unsafe_allow_html=True)
+
+# Create a multiselect widget to select blocked brands
+selected_blocked_brands = st.multiselect("Blocked Brands List", blocked_brands)
+
+# Display the selected blocked brands
+st.write("Selected Blocked Brands:", selected_blocked_brands)
+
 uploaded_image = st.file_uploader("ارفع صوره للباركود الموجود علي المنتج", type=["jpg", "png"])
 manual_barcode_input = st.number_input("ادخل البار كود الخاص ب المنتج ", value=0, min_value=0, step=1)
 
@@ -59,7 +69,7 @@ if uploaded_image is not None:
         st.write("Extracted Barcode from Image:", extracted_barcode)
         barcode_lookup(extracted_barcode)
     else:
-        st.write("الصوره غير واضحه حاول مره اخري تصوير البار كود بطريقه اوضح.")
+        st.write("Unable to extract a valid barcode from the uploaded image.")
 
 if st.button("بحث "):
     barcode_lookup(manual_barcode_input)
