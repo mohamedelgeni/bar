@@ -4,33 +4,38 @@ import json
 import os
 import cv2
 import numpy as np
-
 from pyzbar.pyzbar import decode
 
 # Define lists of blocked brands and their corresponding replacements
 blocked_brands = ["aquafina", "BlockedBrand2", "BlockedBrand3"]
 replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
 
-# List of blocked brands for the sidebar
-blocked_list = [
-    "Lipton", "Nescafé", "nestle Elvan", "aqua", "pavane", "coffee mate", "nestle water",
-    "Coca-Cola", "Schweppes", "mirinda", "Tang", "Fanta", "Sprit", "Pepsi", "AQUAFINA",
-    "Tropicana", "Mounten Dew", "7up", "CERILAC", "bledina", "Beblac", "Donone", "NIDO",
-    "Activia", "kraft", "Marlboro", "quaker", "corn fleaks", "special k", "coco pops",
-    "Kellogg’s Frosties", "Maggi", "Knorr", "Heinz", "kinder", "twix", "moroo",
-    "freerio rusher", "Hohos", "country كورن فليكس", "Danone", "Lion", "Tuc",
-    "Cadbury DairyMILK", "Oreo", "Baskin-Robbins", "Kitkat", "m&ms", "SNICKERS", "BOUNTY",
-    "MARS", "kinder", "twix", "moroo", "freerio roshiere", "Hohos", "Cheetos", "Doritos",
-    "pringles", "puvana", "Vaseline", "Dove", "Cif", "Clear", "Lux", "Axe", "Unilever",
-    "Surf", "Ponds", "Kia", "L'Oreal", "The Body Shop", "Maybelline", "Procter & Gamble",
-    "Head & Shoulders", "Gillete", "Pantene", "BRAUN", "VO5", "SUNSILK", "Pizza Hut",
-    "Starbucks", "Dunkin' Donuts", "Burger King", "Papa John's", "McDonald's", "KFC",
-    "Nesquik", "ice cream", "Starbucks", "Downy Comfort", "Fairy", "Crest", "Oral-B",
-    "Ariel", "Tide", "Always", "Pampers", "Johnsons baby", "Garnier", "Tide", "OMO", "fa",
-    "Lifebuoy", "Lux", "clean&Clear", "Pril", "Ariel", "Comfort", "cif", "DAC", "neutrogena", "Jif",
-    "Sandisk", "Xerox", "philips", "Dell", "hp", "Gillette", "Venus", "Braun", "Camay", "zest", "apple",
-    "Nike", "polo", "lacosta"
-]
+# Define categories for the blocked brands
+categories = {
+    "المطاعم": [
+       " Pizza Hut", "Starbucks"," Dunkin' Donuts", "Burger King", "Papa John's"," McDonalds", "KFC (Kentucky Fried Chicken)"," Nesquik"," Starbucks"
+    ],
+    "منتجات السوبرماركت": [
+        "Nesquik", "ice cream", "Starbucks", "Lipton", "Nescafé", "nestle Elvan", "aqua", "pavane", "coffee mate", "nestle water"
+    ],
+    "ماركت": [
+        "Coca-Cola", "Schweppes", "mirinda", "Tang", "Fanta", "Sprit", "Pepsi", "AQUAFINA", "Tropicana", "Mounten Dew", "7up"
+    ],
+    "الملابس": [
+        "Nike", "polo", "lacosta"
+    ],
+    "منتجات أخرى": [
+        "CERILAC", "bledina", "Beblac", "Donone", "NIDO", "Activia", "kraft", "Marlboro", "quaker", "corn fleaks", "special k",
+        "coco pops", "Kellogg’s Frosties", "Maggi", "Knorr", "Heinz", "kinder", "twix", "moroo", "freerio rusher", "Hohos", "country كورن فليكس",
+        "Danone", "Lion", "Tuc", "Cadbury DairyMILK", "Oreo", "Baskin-Robbins", "Kitkat", "m&ms", "SNICKERS", "BOUNTY", "MARS",
+        "kinder", "twix", "moroo", "freerio roshiere", "Hohos", "Cheetos", "Doritos", "pringles", "puvana", "Vaseline", "Dove", "Cif",
+        "Clear", "Lux", "Axe", "Unilever", "Surf", "Ponds", "Kia", "L'Oreal", "The Body Shop", "Maybelline", "Procter & Gamble",
+        "Head & Shoulders", "Gillete", "Pantene", "BRAUN", "VO5", "SUNSILK"
+    ],
+    "العناية بالبشرة": [
+        "Pizza Hut", "Starbucks", "Dunkin' Donuts", "Burger King", "Papa John's", "McDonald's", "KFC (Kentucky Fried Chicken)"
+    ]
+}
 
 def barcode_lookup(barcode):
     api_key = "6rlauhu0u2zzl0y3oveow51fcineni"
@@ -62,10 +67,15 @@ def barcode_lookup(barcode):
 st.markdown(f"<h1 style='text-align: center; font-size:50px;'>{('مقاطعة المنتجات التي تدعم إسرائيل')}</h1>", unsafe_allow_html=True)
 st.markdown(f"<h1 style='text-align: center; font-size:20px;'>{('تحديد المنتجات التي تدعم إسرائيل عن طريق تحديد البار كود الخاص ب المنتج و ترشيح بديل')}</h1>", unsafe_allow_html=True)
 
-# Add the blocked brands list to the sidebar
-st.sidebar.markdown("Blocked Brands:")
-for brand in blocked_list:
-    st.sidebar.text(brand)
+# Sidebar to select brands by category
+selected_category = st.sidebar.selectbox("Select a Category", list(categories.keys()))
+
+# Display brands in the selected category
+if selected_category:
+    st.sidebar.markdown(f"**{selected_category}**")
+    selected_brands = categories[selected_category]
+    for brand in selected_brands:
+        st.sidebar.text(brand)
 
 uploaded_image = st.file_uploader("ارفع صوره للباركود الموجود علي المنتج", type=["jpg", "png"])
 manual_barcode_input = st.number_input("ادخل البار كود الخاص ب المنتج ", value=0, min_value=0, step=1)
@@ -88,5 +98,5 @@ if uploaded_image is not None:
     else:
         st.write("Unable to extract a valid barcode from the uploaded image.")
 
-if st.button("بحث "):
+if st.button("بحث"):
     barcode_lookup(manual_barcode_input)
