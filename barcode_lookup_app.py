@@ -8,7 +8,7 @@ from pyzbar.pyzbar import decode
 # Define lists of blocked brands and their corresponding replacements
 blocked_brands = [
     ["lay's", "crunchy max", "mini cheetos", "doritos", "pic rolls", "pic sticks", "sunbites", "lays pringles", "sudanese lay's de litch"],
-    ["coca cola", "fanta", "pepsi", "sprite", "miranda", "7up", "mountain dew"],
+    ["coca cola", "fanta", "pepsi", "sprite", "mirinda", "7up", "mountain dew"],
     ["aquafina", "baraka (nestle)", "dasani"],
     ["ho hos", "twinkies", "rolls", "any hostess product", "twinkez"],
     ["samba", "kraft", "boreo (kraft)", "oreo", "tuc"],
