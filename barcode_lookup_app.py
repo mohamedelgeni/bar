@@ -1,44 +1,96 @@
 import streamlit as st
 import requests
 import json
-import os
 import cv2
 import numpy as np
 from pyzbar.pyzbar import decode
 
 # Define lists of blocked brands and their corresponding replacements
-blocked_brands = ["aquafina", "BlockedBrand2", "BlockedBrand3"]
-replacement_brands = ["Replacement1", "Replacement2", "Replacement3"]
+blocked_brands = [
+    ["lay's", "crunchy max", "mini cheetos", "doritos", "pic rolls", "pic sticks", "sunbites", "lays pringles", "sudanese lay's de litch"],
+    ["coca cola", "fanta", "pepsi", "sprite", "miranda", "7up", "mountain dew"],
+    ["aquafina", "baraka (nestle)", "dasani"],
+    ["ho hos", "twinkies", "rolls", "any hostess product", "twinkez"],
+    ["samba", "kraft", "boreo (kraft)", "oreo", "tuc"],
+    ["trident", "clorets", "dentyne", "halls"],
+    ["tang"],
+    ["fairy"],
+    ["danone", "activia", "rachitel", "danjou"],
+    ["morro", "flutes", "snickers", "galaxy", "kit kat", "mandolin", "jersey", "twix", "mars" "bubbles", "maltesers", "bounty", "kinder"],
+    ["nestle company"],
+    ["kfc", "mcdonald's", "pizza hut", "little caesars", "hardee's", "domino's pizza", "fridays"],
+    ["lipton"],
+    ["lipton", "nescafé", "nestle elvan", "aqua", "pavane", "coffee mate", "starbucks"],
+    ["ariel", "tide", "lang botex", "zest", "procter & gamble products", "downy fabric softener"],
+    ["pantene", "johnson's baby", "head & shoulders"],
+    ["johnson's"],
+    ["pampers"],
+    ["camay", "lux"],
+    ["dell", "apple"],
+    ["signal", "close up", "colgate", "crest"],
+    ["avon", "hair cream (palmers)"]
+]
+
+
+alternative_brands = [
+    ["Tats", "Tiger", "Rotito", "Fox", "Zigo", "Masrawy", "Windows", "Mexicorondos", "Break", "Lyon", "Bozo Cracky (twist)", "Waves Mannah", "jolio"],
+    ["Spiro Spates", "Cinnacola", "Sport", "UGO", "V7", "big fresh", "Schneider is a fizzy beer"],
+    ["Hayat", "Safi", "Bavana", "Isis", "beinnova", "Aqua Delta"],
+    ["Tea Tea", "Chateau", "Drow Ferjallo", "Swiss Roll", "Cassy (Turkish)"],
+    ["Lambada", "Shamadan", "Fresh", "Tempo", "Ulker (Turkey)", "Drow", "Any products from Annie Company (Turkish)"],
+    ["Ghandour"],
+    ["Frooty", "Best", "Aga", "Ferjallo", "Gehena", "Betty"],
+    ["Brill"],
+    ["Gehena", "Almarai", "Bakheer"],
+    ["Pure", "Ulker Company (Turkish)", "All types of Turkish chocolate are widely"],
+    ["Alicafe"],
+    ["Moumen", "Wal3teen", "Ketchup", "Fotoma (El Mansoura)"],
+    ["Al Rabie Express", "Twinings", "Ahmed Tea", "El-arosaa"],
+    ["AliCafe", "AboAuof", "Barlico"],
+    ["Persil", "Oxi", "Extra", "Comfort fabric softener"],
+    ["Sparkle", "Elvive", "Clear", "Herbal Essences"],
+    ["Dove", "Olay", "Eva", "Nivea", "Himalaya"],
+    ["Baby Fine", "Giggle", "Sleepy"],
+    ["Dove", "Fa", "Farah", "Duru Natural (Turkish)"],
+    ["Toshiba"],
+    ["Miswak", "Sensodyne", "Aqua Fresh"],
+    ["My Way"]
+]
 
 # Define categories for the blocked brands
 categories = {
-    "المطاعم": [
-       " Pizza Hut", "Starbucks"," Dunkin' Donuts", "Burger King", "Papa John's"," McDonalds", "KFC (Kentucky Fried Chicken)"," Nesquik"," Starbucks"
-    ],
-    "منتجات السوبرماركت": [
-        "Nesquik", "ice cream", "Starbucks", "Lipton", "Nescafé", "nestle Elvan", "aqua", "pavane", "coffee mate", "nestle water"
-    ],
-    "ماركت": [
-        "Coca-Cola", "Schweppes", "mirinda", "Tang", "Fanta", "Sprit", "Pepsi", "AQUAFINA", "Tropicana", "Mounten Dew", "7up"
-    ],
-    "الملابس": [
-        "Nike", "polo", "lacosta"
-    ],
-    "منتجات أخرى": [
-        "CERILAC", "bledina", "Beblac", "Donone", "NIDO", "Activia", "kraft", "Marlboro", "quaker", "corn fleaks", "special k",
-        "coco pops", "Kellogg’s Frosties", "Maggi", "Knorr", "Heinz", "kinder", "twix", "moroo", "freerio rusher", "Hohos", "country كورن فليكس",
-        "Danone", "Lion", "Tuc", "Cadbury DairyMILK", "Oreo", "Baskin-Robbins", "Kitkat", "m&ms", "SNICKERS", "BOUNTY", "MARS",
-        "kinder", "twix", "moroo", "freerio roshiere", "Hohos", "Cheetos", "Doritos", "pringles", "puvana", "Vaseline", "Dove", "Cif",
-        "Clear", "Lux", "Axe", "Unilever", "Surf", "Ponds", "Kia", "L'Oreal", "The Body Shop", "Maybelline", "Procter & Gamble",
-        "Head & Shoulders", "Gillete", "Pantene", "BRAUN", "VO5", "SUNSILK"
-    ],
-    "العناية بالبشرة": [
-        "Pizza Hut", "Starbucks", "Dunkin' Donuts", "Burger King", "Papa John's", "McDonald's", "KFC (Kentucky Fried Chicken)"
-    ]
+    "Chips": ["Lay's", "Crunchy Max", "Mini Cheetos", "Doritos", "Pic Rolls", "Pic Sticks", "Sunbites", "Lays Pringles", "Sudanese Lay's De Litch"],
+    "Beverages": ["Coca Cola", "Fanta", "Pepsi", "Sprite", "Miranda", "7UP", "Mountain Dew"],
+    "Water": ["Aquafina", "Baraka (Nestle)", "Dasani"],
+    "Cakes": ["Ho Hos", "Twinkies", "Rolls", "Any Hostess product", "Twinkez"],
+    "Biscuits": ["Samba", "Kraft", "Boreo (Kraft)", "Oreo", "Tuc"],
+    "Chewing Gum": ["Trident", "Clorets", "Dentyne", "Halls"],
+    "Juices": ["Tang"],
+    "Dishwashing Liquid": ["Fairy"],
+    "Yogurt": ["Danone", "Activia", "Rachitel", "Danjou"],
+    "Chocolate":["Morro", "Flutes", "Snickers", "Galaxy", "kit kat", "Mandolin", "Jersey", "Twix", "Mars" "Bubbles", "Maltesers", "Bounty", "kinder"],
+    "Nescafe": ["Nestle company"],
+    "Restaurants": ["KFC", "McDonald's", "Pizza Hut", "Little Caesars", "Hardee's", "Domino's Pizza", "Fridays"],
+    "Tea": ["Lipton"],
+    "Coffee": ["Lipton", "Nescafé", "nestle Elvan", "aqua", "pavane", "coffee mate", "Starbucks"],
+    "Detergents": ["Ariel", "Tide", "Lang Botex", "Zest", "Procter & Gamble products", "Downy fabric softener"],
+    "Shampoo": ["Pantene", "Johnson's Baby", "Head & Shoulders"],
+    "Face creams": ["Johnson's"],
+    "Baby products": ["Pampers"],
+    "Soap": ["Camay", "Lux"],
+    "Electronics companies": ["Dell", "Apple"],
+    "Toothpaste": ["Signal", "Close Up", "Colgate", "Crest"],
+    "Cosmetics": ["Avon", "Hair cream (Palmers)"]
 }
 
+def get_alternative_category(category):
+    for cat, brands in categories.items():
+        if cat != category and any(brand in blocked_brands for brand in brands):
+            return categories[cat]
+    return []
+
 def barcode_lookup(barcode):
-    api_key = "6rlauhu0u2zzl0y3oveow51fcineni"
+    api_key = "f8uzgjhim83thrthzet51drd6l69p4"
     url = f"https://api.barcodelookup.com/v3/products?barcode={barcode}&formatted=y&key={api_key}"
 
     response = requests.get(url)
@@ -47,17 +99,24 @@ def barcode_lookup(barcode):
         data = response.json()
         barcode = data["products"][0]["barcode_number"]
         name = data["products"][0]["title"]
-        brand = data["products"][0]["brand"].strip().lower()  # Compare in a case-insensitive manner and remove leading/trailing whitespace
+        brand = data["products"][0]["brand"].strip().lower()
 
         st.write("Barcode Number:", barcode)
         st.write("Title:", name)
         st.write("Brand:", brand)
 
-        # Check if the brand is in the list of blocked brands
-        if brand in (blocked.strip().lower() for blocked in blocked_brands):
-            index = [blocked.strip().lower() for blocked in blocked_brands].index(brand)
-            replacement = replacement_brands[index]
-            st.write("This brand is blocked. Here is a replacement:", replacement)
+        if any(brand in blocked for blocked in blocked_brands):
+            try:
+                index = next((i for i, sublist in enumerate(blocked_brands) if brand in sublist))
+                replacement = alternative_brands[index]
+            except IndexError:
+                category = next((cat for cat, brands in categories.items() if brand in brands), None)
+                replacement = get_alternative_category(category)
+                
+            if replacement:
+                st.write("This brand is blocked. Here are alternative brands:", replacement)
+            else:
+                st.write("This brand is blocked, and alternative brands are not available for this category.")
         else:
             st.write("This brand is not blocked.")
     else:
