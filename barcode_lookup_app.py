@@ -90,7 +90,7 @@ def get_alternative_category(category):
     return []
 
 def barcode_lookup(barcode):
-    api_key = "ilceotyrgsxs1vqyk7wk13uj9jj7mq"
+    api_key = "02tapc3kexaru12njqm0stb1g43vnc"
     url = f"https://api.barcodelookup.com/v3/products?barcode={barcode}&formatted=y&key={api_key}"
 
     response = requests.get(url)
